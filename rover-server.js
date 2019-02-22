@@ -57,7 +57,7 @@ module.exports = class RoverServer {
                         !((direction > 0 || !!i) && !(direction > 0 && !!i));
 
             port.writeSync(+value);
-            console.log(side, port, value);
+            console.log(side, value);
         });
     }
 
