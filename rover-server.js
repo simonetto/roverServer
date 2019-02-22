@@ -2,7 +2,7 @@
 const ports = require('./gpio-ports');
 
 const MIN_DISTANCE = 10;
-const POLLING_INTERVAL = 70;
+const POLLING_INTERVAL = 200;
 const SOUND_SPEED = 17150;
 
 let distance = 0;
@@ -35,6 +35,10 @@ module.exports = class RoverServer {
             const pulseDuration = pulseEnd - pulseStart;
             distance = pulseDuration * SOUND_SPEED;
 
+console.log('-------------------')
+console.log('distance', distance)
+console.log(pulseDuration, pulseEnd, pulseStart)
+
             if (this.control) {
                 const goingFwd = this.control.left.direction < 0 || this.control.right.direction;
 
@@ -54,10 +58,9 @@ module.exports = class RoverServer {
         ports.SERVOS[side].forEach((port, i) => {
             let value = !this.eBrake(direction) &&
                         direction !== 0 &&
-                        !((direction > 0 || !!i) && !(direction > 0 && !!i));
+                        ((direction > 0 || !!i) && !(direction > 0 && !!i));
 
             port.writeSync(+value);
-            console.log(side, value);
         });
     }
 
