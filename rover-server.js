@@ -51,9 +51,7 @@ module.exports = class RoverServer {
     }
 
     move(side, direction) {
-        let ports = ports.SERVOS[side];
-
-        ports.forEach((port, i) => {
+        ports.SERVOS[side].forEach((port, i) => {
             let value = !this.eBrake(direction) &&
                         direction !== 0 &&
                         !((direction > 0 || !!i) && !(direction > 0 && !!i));
