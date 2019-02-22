@@ -1,11 +1,13 @@
 'use strict'
+const Gpio = require('onoff').Gpio;
+
 module.exports = Object.freeze({
     SERVOS : {
-        LEFT : [{value: 17}, {value: 22}],
-        RIGHT : [{value: 23}, {value: 24}]
+        LEFT : [new Gpio(17, 'out'), new Gpio(22, 'out')],
+        RIGHT : [new Gpio(23, 'out'), new Gpio(24, 'out')]
     },
     RANGE_SENSOR : {
-        TRIG : {value: 23},
-        ECHO : {value: 24}
+        TRIG : new Gpio(23, 'out'),
+        ECHO : new Gpio(24, 'in')
     }
 });

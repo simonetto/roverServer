@@ -1,6 +1,6 @@
 'use strict'
 const ports = require('./gpio-ports');
-const Gpio = require('onoff').Gpio;
+
 const MIN_DISTANCE = 10;
 const POLLING_INTERVAL = 70;
 const SOUND_SPEED = 17150;
@@ -18,27 +18,17 @@ module.exports = class RoverServer {
     pollDistance() {
         let pulseStart = 0;
         let pulseEnd = 0;
-        const trigGpio = ports.RANGE_SENSOR.TRIG.gpio;
-        const echoGpio = ports.RANGE_SENSOR.ECHO.gpio;
 
-        if (!trigGpio) {
-            ports.RANGE_SENSOR.TRIG.gpio = new Gpio(ports.RANGE_SENSOR.TRIG.value, 'out');
-        }
-
-        if (!echoGpio) {
-            ports.RANGE_SENSOR.ECHO.gpio = new Gpio(ports.RANGE_SENSOR.ECHO.value, 'in');
-        }
-
-        ports.RANGE_SENSOR.TRIG.gpio.writeSync(1);
+        ports.RANGE_SENSOR.TRIG.writeSync(1);
 
         setTimeout(() => {
-            ports.RANGE_SENSOR.TRIG.gpio.writeSync(0);
+            ports.RANGE_SENSOR.TRIG.writeSync(0);
 
-            while (ports.RANGE_SENSOR.ECHO.gpio.readSync() === 0) {
+            while (ports.RANGE_SENSOR.ECHO.readSync() === 0) {
                 pulseStart = + new Date();
             }
 
-            while (ports.RANGE_SENSOR.ECHO.gpio.readSync() === 1) {
+            while (ports.RANGE_SENSOR.ECHO.readSync() === 1) {
                 pulseEnd = + new Date();
             }
 
@@ -64,15 +54,12 @@ module.exports = class RoverServer {
         let ports = ports.SERVOS[side];
 
         ports.forEach((port, i) => {
-            if (!port.gpio) {
-                port.gpio = new Gpio(port.value, 'out');
-            }
             let value = !this.eBrake(direction) &&
                         direction !== 0 &&
                         !((direction > 0 || !!i) && !(direction > 0 && !!i));
 
-            port.gpio.writeSync(+value);
-            console.log(side, port.value, value);
+            port.writeSync(+value);
+            console.log(side, port, value);
         });
     }
 
