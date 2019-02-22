@@ -43,7 +43,7 @@ module.exports = class RoverServer {
                     move('right', -1);
                 }
             }
-        }, 0,01);
+        }, 0.01);
     }
 
     eBrake(direction) {
