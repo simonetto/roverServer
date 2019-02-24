@@ -1,7 +1,7 @@
 'use strict'
 const ports = require('./gpio-ports');
 
-const MAX_DISTANCE = 30;
+const MAX_DISTANCE = 40;
 const POLLING_INTERVAL = 500;
 const SOUND_SPEED = 3430;
 
