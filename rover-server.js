@@ -1,11 +1,11 @@
 'use strict'
 const ports = require('./gpio-ports');
 
-const MIN_DISTANCE = 10;
-const POLLING_INTERVAL = 200;
-const SOUND_SPEED = 17150;
+const MAX_DISTANCE = 30;
+const POLLING_INTERVAL = 500;
+const SOUND_SPEED = 3430;
 
-let distance = 0;
+let distance = Number.MAX_SAFE_INTEGER;
 
 module.exports = class RoverServer {
     onMove(control) {
@@ -33,25 +33,26 @@ module.exports = class RoverServer {
             }
 
             const pulseDuration = pulseEnd - pulseStart;
-            distance = pulseDuration * SOUND_SPEED;
+            distance = pulseDuration * SOUND_SPEED / 1000;
 
-console.log('-------------------')
-console.log('distance', distance)
-console.log(pulseDuration, pulseEnd, pulseStart)
-
+	console.log(this.control)
             if (this.control) {
                 const goingFwd = this.control.left.direction < 0 || this.control.right.direction;
 
-                if (distance < MIN_DISTANCE && goingFwd) {
-                    move('left', -1);
-                    move('right', -1);
+		console.log(distance, goingFwd)
+                if (distance > MAX_DISTANCE && goingFwd) {
+                    ports.SERVOS.LEFT[0].writeSync(0);
+		    ports.SERVOS.LEFT[1].writeSync(0);
+		    ports.SERVOS.RIGHT[0].writeSync(0);
+		    ports.SERVOS.RIGHT[1].writeSync(0);
+		    console.log('BREAK!')
                 }
             }
         }, 0.01);
     }
 
     eBrake(direction) {
-        return distance < MIN_DISTANCE && direction < 0;
+        return distance > MAX_DISTANCE && direction < 0;
     }
 
     move(side, direction) {
