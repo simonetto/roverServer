@@ -17,6 +17,7 @@
     "compression": "^1.7.3",
     "express": "^4.16.4",
     "install": "^0.12.2",
+    "mmm-usonic": "^2.5.3",
     "onoff": "^3.2.8",
     "socket.io": "^2.2.0",
     "typescript": "^3.3.3"
