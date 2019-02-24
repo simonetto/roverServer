@@ -37,7 +37,7 @@ module.exports = class RoverServer {
             distance = pulseDuration * SOUND_SPEED / 1000;
 
             if (control) {
-                const goingFwd = control.left.direction < 0 || control.right.direction;
+                const goingFwd = control.left.direction > 0 || control.right.direction > 0;
 
                 if (distance > MAX_DISTANCE && goingFwd) {
                     ports.SERVOS.LEFT[0].writeSync(0);
@@ -51,7 +51,7 @@ module.exports = class RoverServer {
     }
 
     eBrake(direction) {
-        return distance > MAX_DISTANCE && direction < 0;
+        return distance > MAX_DISTANCE && direction > 0;
     }
 
     move(side, direction) {
