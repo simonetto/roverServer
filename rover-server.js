@@ -18,33 +18,33 @@ module.exports = class RoverServer {
     }
 
     pollDistance() {
-      let startTick;
+        let startTick;
 
-      ports.RANGE_SENSOR.ECHO.on('alert', (level, tick) => {
-        if (level == 1) {
-          startTick = tick;
-        } else {
-          const endTick = tick;
-          const diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
-          distance = diff / 2 / SOUND_SPEED;
-          console.log( distance );
+        ports.RANGE_SENSOR.ECHO.on('alert', (level, tick) => {
+            if (level == 1) {
+                startTick = tick;
+            } else {
+                const endTick = tick;
+                const diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
+                distance = diff / 2 / SOUND_SPEED;
+                console.log( distance );
 
-          if (control) {
-              const goingFwd = control.left.direction > 0 || control.right.direction > 0;
-              console.log('fwd', goingFwd);
-              console.log('distance', distance);
-              console.log('max', MAX_DISTANCE)
+                if (control) {
+                    const goingFwd = control.left.direction > 0 || control.right.direction > 0;
+                    console.log('fwd', goingFwd);
+                    console.log('distance', distance);
+                    console.log('max', MAX_DISTANCE)
 
-              if (distance > MAX_DISTANCE && goingFwd) {
-                  ports.SERVOS.LEFT[0].writeSync(0);
-                  ports.SERVOS.LEFT[1].writeSync(0);
-                  ports.SERVOS.RIGHT[0].writeSync(0);
-                  ports.SERVOS.RIGHT[1].writeSync(0);
-                  console.log('BREAK!')
-              }
-          }
-        }
-      });
+                    if (distance > MAX_DISTANCE && goingFwd) {
+                        ports.SERVOS.LEFT[0].writeSync(0);
+                        ports.SERVOS.LEFT[1].writeSync(0);
+                        ports.SERVOS.RIGHT[0].writeSync(0);
+                        ports.SERVOS.RIGHT[1].writeSync(0);
+                        console.log('BREAK!')
+                    }
+                }
+            }
+        });
     }
 
     eBrake(direction) {
@@ -64,9 +64,9 @@ module.exports = class RoverServer {
     }
 
     constructor() {
-        ports.RANGE_SENSOR.TRIG.digitalWrite(0);
+        ports.RANGE_SENSOR.TRIG.writeSync(0);
         setInterval(() => {
-          ports.RANGE_SENSOR.TRIG.trigger(10, 1); // Set trigger high for 10 microseconds
+            ports.RANGE_SENSOR.TRIG.trigger(10, 1); // Set trigger high for 10 microseconds
         }, POLLING_INTERVAL);
 
         this.pollDistance();
