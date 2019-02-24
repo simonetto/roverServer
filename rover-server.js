@@ -34,10 +34,13 @@ module.exports = class RoverServer {
             }
 
             const pulseDuration = pulseEnd - pulseStart;
-            distance = pulseDuration * SOUND_SPEED / 1000;
+            distance = pulseDuration * SOUND_SPEED / (2 * 1000);
 
             if (control) {
                 const goingFwd = control.left.direction > 0 || control.right.direction > 0;
+                console.log('fwd', goingFwd);
+                console.log('distance', distance);
+                console.log('max', MAX_DISTANCE)
 
                 if (distance > MAX_DISTANCE && goingFwd) {
                     ports.SERVOS.LEFT[0].writeSync(0);
@@ -55,7 +58,7 @@ module.exports = class RoverServer {
     }
 
     move(side, direction) {
-        console.log(side, direction)
+        //console.log(side, direction)
 
         ports.SERVOS[side].forEach((port, i) => {
             let value = !this.eBrake(direction) &&
