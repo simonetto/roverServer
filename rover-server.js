@@ -85,7 +85,7 @@ module.exports = class RoverServer {
     constructor() {
         usonic.init(error => {
             if (error) {
-                console.log('ultrasonic error');
+                console.log('ultrasonic error', error);
             } else {
                 console.log('ultrasonic on!');
                 sensor = usonic.createSensor(18, 25, 450);
