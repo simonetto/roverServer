@@ -88,12 +88,13 @@ module.exports = class RoverServer {
                 console.log('ultrasonic error');
             } else {
                 console.log('ultrasonic on!');
+                sensor = usonic.createSensor(18, 25, 450);
+
+                setInterval(this.pollDistance, POLLING_INTERVAL);
             }
         });
 
-        sensor = usonic.createSensor(18, 25, 450);
 
-        setInterval(this.pollDistance, POLLING_INTERVAL);
     /*    ports.RANGE_SENSOR.TRIG.writeSync(0);
         setInterval(() => {
             ports.RANGE_SENSOR.TRIG.writeSync(1); // Set trigger high for 10 microseconds
