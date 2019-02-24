@@ -43,8 +43,8 @@ console.log(pulseDuration, pulseEnd, pulseStart)
                 const goingFwd = this.control.left.direction < 0 || this.control.right.direction;
 
                 if (distance < MIN_DISTANCE && goingFwd) {
-                    move('left', -1);
-                    move('right', -1);
+                    move('left', 1);
+                    move('right', 1);
                 }
             }
         }, 0.01);
@@ -58,7 +58,7 @@ console.log(pulseDuration, pulseEnd, pulseStart)
         ports.SERVOS[side].forEach((port, i) => {
             let value = !this.eBrake(direction) &&
                         direction !== 0 &&
-                        ((direction > 0 || !!i) && !(direction > 0 && !!i));
+                        ((direction < 0 || !!i) && !(direction < 0 && !!i));
 
             port.writeSync(+value);
         });
