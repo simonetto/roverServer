@@ -67,7 +67,10 @@ module.exports = class RoverServer {
     constructor() {
         ports.RANGE_SENSOR.TRIG.writeSync(0);
         setInterval(() => {
-            ports.RANGE_SENSOR.TRIG.trigger(10, 1); // Set trigger high for 10 microseconds
+            ports.RANGE_SENSOR.TRIG.writeSync(1); // Set trigger high for 10 microseconds
+            $setTimeout(() {
+                ports.RANGE_SENSOR.TRIG.writeSync(0);
+            }, 0.01);
         }, POLLING_INTERVAL);
 
         this.pollDistance();
