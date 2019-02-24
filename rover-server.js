@@ -1,5 +1,6 @@
 'use strict'
 const ports = require('./gpio-ports');
+const usonic = require('mmm-usonic');
 
 const MAX_DISTANCE = 40;
 const POLLING_INTERVAL = 500;
@@ -8,6 +9,7 @@ const SOUND_SPEED = 1e6/34321;
 
 let distance = Number.MAX_SAFE_INTEGER;
 let control = null;
+let sensor = null;
 
 module.exports = class RoverServer {
     onMove(joystick) {
@@ -18,7 +20,23 @@ module.exports = class RoverServer {
     }
 
     pollDistance() {
-        let startTick;
+        if (control) {
+            const goingFwd = control.left.direction > 0 || control.right.direction > 0;
+            distance = sensor();
+            console.log('fwd', goingFwd);
+            console.log('distance', distance);
+            console.log('max', MAX_DISTANCE)
+
+            if (distance > MAX_DISTANCE && goingFwd) {
+                ports.SERVOS.LEFT[0].writeSync(0);
+                ports.SERVOS.LEFT[1].writeSync(0);
+                ports.SERVOS.RIGHT[0].writeSync(0);
+                ports.SERVOS.RIGHT[1].writeSync(0);
+                console.log('BREAK!')
+            }
+        }
+    }
+/*        let startTick;
 
         ports.RANGE_SENSOR.ECHO.watch((level, tick) => {
             console.log(leve, tick)
@@ -46,7 +64,7 @@ module.exports = class RoverServer {
                 }
             }
         });
-    }
+    }*/
 
     eBrake(direction) {
         return distance > MAX_DISTANCE && direction > 0;
@@ -65,7 +83,18 @@ module.exports = class RoverServer {
     }
 
     constructor() {
-        ports.RANGE_SENSOR.TRIG.writeSync(0);
+        usonic.init(error => {
+            if (error) {
+                console.log('ultrasonic error');
+            } else {
+                console.log('ultrasonic on!');
+            }
+        });
+
+        sensor = usonic.createSensor(18, 25, 450);
+
+        setInterval(this.pollDistance, POLLING_INTERVAL);
+    /*    ports.RANGE_SENSOR.TRIG.writeSync(0);
         setInterval(() => {
             ports.RANGE_SENSOR.TRIG.writeSync(1); // Set trigger high for 10 microseconds
             setTimeout(() => {
@@ -73,6 +102,6 @@ module.exports = class RoverServer {
             }, 0.01);
         }, POLLING_INTERVAL);
 
-        this.pollDistance();
+        this.pollDistance();*/
     }
 };
