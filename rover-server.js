@@ -20,7 +20,8 @@ module.exports = class RoverServer {
     pollDistance() {
         let startTick;
 
-        ports.RANGE_SENSOR.ECHO.on('alert', (level, tick) => {
+        ports.RANGE_SENSOR.ECHO.watch((level, tick) => {
+            console.log(leve, tick)
             if (level == 1) {
                 startTick = tick;
             } else {
