@@ -1,6 +1,5 @@
 'use strict'
 const ports = require('./gpio-ports');
-const usonic = require('mmm-usonic');
 
 const MAX_DISTANCE = 40;
 const POLLING_INTERVAL = 500;
@@ -83,19 +82,7 @@ module.exports = class RoverServer {
     }
 
     constructor() {
-        usonic.init(error => {
-            if (error) {
-                console.log('ultrasonic error', error);
-            } else {
-                console.log('ultrasonic on!');
-                sensor = usonic.createSensor(18, 25, 450);
-
-                setInterval(this.pollDistance, POLLING_INTERVAL);
-            }
-        });
-
-
-    /*    ports.RANGE_SENSOR.TRIG.writeSync(0);
+        ports.RANGE_SENSOR.TRIG.writeSync(0);
         setInterval(() => {
             ports.RANGE_SENSOR.TRIG.writeSync(1); // Set trigger high for 10 microseconds
             setTimeout(() => {
@@ -103,6 +90,6 @@ module.exports = class RoverServer {
             }, 0.01);
         }, POLLING_INTERVAL);
 
-        this.pollDistance();*/
+        this.pollDistance();
     }
 };

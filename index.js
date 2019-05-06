@@ -1,6 +1,6 @@
 //https://socket.io/get-started/chat
-//https://github.com/131/h264-live-player
 //https://fullstack.network/streaming-video-from-raspberrypi-to-the-network-using-node-js-33a5b6b78c3d
+//https://www.instructables.com/id/Raspberry-Tank-With-Web-Interface-and-Video-Stream/
 'use strict'
 const RoverServer = require('./rover-server')
 const express = require('express');
@@ -11,7 +11,6 @@ const http = require('http');
 const server = http.Server(app);
 const io = require('socket.io')(server);
 const spawn = require('child_process').spawn;
-//const child = spawn('/opt/vc/bin/raspivid', ['-hf', '-w', '1280', '-h', '1024', '-t', '999999999', '-fps', '20', '-b', '5000000', '-o', '-']);
 const html = __dirname + '/public';
 const port = 4000;
 const rover = new RoverServer();
@@ -35,15 +34,6 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
-});
-
-const videoServer = http.createServer((request, response) => {
-    child.stdout.pipe(response);
-});
-
-//video server
-videoServer.listen(3001, () => {
-    console.log('listening video on *:3001');
 });
 
 //socket listen
