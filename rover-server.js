@@ -7,17 +7,15 @@ const POLLING_INTERVAL = 500;
 const SOUND_SPEED = 1e6/34321;
 
 let distance = Number.MAX_SAFE_INTEGER;
-let control = null;
 let sensor = null;
 
 module.exports = class RoverServer {
     onMove(joystick) {
-        control = joystick;
-        Object.keys(control).forEach(key => {
-            this.move(key.toUpperCase(), control[key]);
+        Object.keys(joystick).forEach(key => {
+            this.move(key.toUpperCase(), joystick[key]);
         });
     }
-
+/*
     pollDistance() {
         if (control) {
             const goingFwd = control.left.direction > 0 || control.right.direction > 0;
@@ -34,7 +32,7 @@ module.exports = class RoverServer {
                 console.log('BREAK!')
             }
         }
-    }
+    }*/
 /*        let startTick;
 
         ports.RANGE_SENSOR.ECHO.watch((level, tick) => {
@@ -66,12 +64,11 @@ module.exports = class RoverServer {
     }*/
 
     eBrake(direction) {
-        return distance > MAX_DISTANCE && direction > 0;
+        return false;
+    //    return distance > MAX_DISTANCE && direction > 0;
     }
 
     move(side, direction) {
-        //console.log(side, direction)
-
         ports.SERVOS[side].forEach((port, i) => {
             let value = !this.eBrake(direction) &&
             direction !== 0 &&
@@ -81,7 +78,7 @@ module.exports = class RoverServer {
         });
     }
 
-    constructor() {
+    constructor() {/*
         ports.RANGE_SENSOR.TRIG.writeSync(0);
         setInterval(() => {
             ports.RANGE_SENSOR.TRIG.writeSync(1); // Set trigger high for 10 microseconds
@@ -90,6 +87,6 @@ module.exports = class RoverServer {
             }, 0.01);
         }, POLLING_INTERVAL);
 
-        this.pollDistance();
+        this.pollDistance();*/
     }
 };
