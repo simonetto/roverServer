@@ -102,10 +102,8 @@ module.exports = class RoverServer {
     }
 
     constructor() {
-        setInterval(() => {
-            loop();
-        }, POLLING_INTERVAL);
-
-        this.pollDistance();
+    /*    setInterval(() => {
+            this.loop();
+        }, POLLING_INTERVAL);*/
     }
 };
