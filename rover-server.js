@@ -6,8 +6,10 @@ const POLLING_INTERVAL = 500;
 // The number of microseconds it takes sound to travel 1cm at 20 degrees celcius
 const SOUND_SPEED = 1e6/34321;
 
-let distance = Number.MAX_SAFE_INTEGER;
-let sensor = null;
+//let distance = Number.MAX_SAFE_INTEGER;
+//let sensor = null;
+
+let duration, cm;
 
 module.exports = class RoverServer {
     onMove(joystick) {
@@ -78,15 +80,30 @@ module.exports = class RoverServer {
         });
     }
 
-    constructor() {/*
+    loop() {
         ports.RANGE_SENSOR.TRIG.writeSync(0);
-        setInterval(() => {
-            ports.RANGE_SENSOR.TRIG.writeSync(1); // Set trigger high for 10 microseconds
+        setTimeout(() => {
+            const start = + new Date()
+            ports.RANGE_SENSOR.TRIG.writeSync(1);
             setTimeout(() => {
                 ports.RANGE_SENSOR.TRIG.writeSync(0);
+
+                let echo = ports.RANGE_SENSOR.ECHO.readSync();
+                while (!echo) {
+                    echo = ports.RANGE_SENSOR.ECHO.readSync();
+                }
+                duration = + new Date() - start;
+                cm = (duration/2) / 29.1;
+                console.log(cm)
             }, 0.01);
+        }, 0.005);
+    }
+
+    constructor() {
+        setInterval(() => {
+            loop();
         }, POLLING_INTERVAL);
 
-        this.pollDistance();*/
+        this.pollDistance();
     }
 };
