@@ -2,7 +2,7 @@
 const ports = require('./gpio-ports');
 
 const MAX_DISTANCE = 40;
-const POLLING_INTERVAL = 500;
+const POLLING_INTERVAL = 2000;
 // The number of microseconds it takes sound to travel 1cm at 20 degrees celcius
 const SOUND_SPEED = 1e6/34321;
 
@@ -81,6 +81,7 @@ module.exports = class RoverServer {
     }
 
     loop() {
+        //Setup
         ports.RANGE_SENSOR.TRIG.writeSync(0);
         setTimeout(() => {
             const start = + new Date()
@@ -93,10 +94,11 @@ module.exports = class RoverServer {
                     echo = ports.RANGE_SENSOR.ECHO.readSync();
                 }
                 duration = + new Date() - start;
+                console.log("duration", duration)
                 cm = (duration/2) / 29.1;
                 console.log(cm)
             }, 0.01);
-        }, 0.005);
+        }, 1000);
     }
 
     constructor() {
